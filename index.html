@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Projektarbeit IAP16B </title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  </head>
+  <body>
+
+    <div class="container">
+
+            <h1>Projektarbeit Ryan</h1>
+            <input type="file" id="files" name="files[]" multiple />
+            <output id="list"></output>
+    </div>
+    <div id = "demo">
+    </div>
+          
+
+</html>
+
+<script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>
+<script>
+
+
+function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+
+    // files is a FileList of File objects. List some properties.
+    var output = [];
+    for (var i = 0, f; f = files[i]; i++) {
+      if (i > 1){
+        alert("Nur ein File auswählen");
+      }else if(f.size > 100000){
+        alert("File zu gross");
+      }else if(f.type != "image/jpeg" && f.type != "image/png"){
+        alert("Nur Dateien mit .jpg oder .png werden akzeptiert");
+      }else{
+      processImage(f)
+      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                  f.size, ' bytes, last modified: ',
+                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
+                  '</li>');
+    }
+    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
+  }
+}
+  document.getElementById('files').addEventListener('change', handleFileSelect, false);
+
+
+
+  function processImage(file){
+    Tesseract.recognize(file)
+       .progress(function  (p) { console.log('progress', p)    })
+       .then(function (result) {
+            let sresult = result;
+            getCard(sresult.text);
+             } )
+       
+  }
+  function getCard(text){
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var txt = this.responseText;
+      var obj = JSON.parse(txt);
+        if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+            document.getElementById("demo").innerHTML="<img src=" + obj.image_uris.small + ">";}
+        else{(document.getElementById("demo").innerHTML="<img src=" + obj.image_uris.normal + ">")}
+  }
+  if (this.status != 200 && this.readyState == 4){
+    alert("Es konnte nichts gefunden werden für: "+gagi);
+  }
+};
+ var gagi = text.replace(/\n/g, "")
+ xhttp.open("GET", "https://api.scryfall.com/cards/named?exact="+gagi+"&pretty=true", true);
+ xhttp.send();
+     }
+</script>
+<style>
+
+
+
+</style>
