@@ -12,24 +12,27 @@
     <div class="container">
 
             <h1>Projektarbeit Ryan</h1>
-            <input type="file" id="files" name="files[]" multiple />
+            <p>Wählen Sie ein Bild von Ihrem Gerät aus. <br> Das Bild sollte nur Text enthalten. <br> Anschliessend wird Ihnen das Bild der kompletten Karte zurverfügung gestelt.</p>
+
+              <input type="file" id="files" name="files[]" multiple/>
             <output id="list"></output>
-    </div>
-    <div id = "demo">
-    </div>
+          
+          <div id = "demo">
+          </div>
           
 
 </html>
 
 <script src='https://cdn.jsdelivr.net/gh/naptha/tesseract.js@v1.0.14/dist/tesseract.min.js'></script>
 <script>
-
-
 function handleFileSelect(evt) {
+  document.body.style.cursor  = 'wait';
     var files = evt.target.files; // FileList object
 
     // files is a FileList of File objects. List some properties.
     var output = [];
+    	
+    
     for (var i = 0, f; f = files[i]; i++) {
       if (i > 1){
         alert("Nur ein File auswählen");
@@ -63,6 +66,7 @@ function handleFileSelect(evt) {
   function getCard(text){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
+  
     if (this.readyState == 4 && this.status == 200) {
       var txt = this.responseText;
       var obj = JSON.parse(txt);
@@ -77,10 +81,7 @@ function handleFileSelect(evt) {
  var gagi = text.replace(/\n/g, "")
  xhttp.open("GET", "https://api.scryfall.com/cards/named?exact="+gagi+"&pretty=true", true);
  xhttp.send();
+ document.body.style.cursor  = 'default';
      }
+     
 </script>
-<style>
-
-
-
-</style>
